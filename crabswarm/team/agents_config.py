@@ -11,6 +11,7 @@ from dataclasses import dataclass, field
 @dataclass
 class ProjectAgent:
     """项目Agent配置"""
+
     id: str
     name: str
     role: str
@@ -19,7 +20,7 @@ class ProjectAgent:
     tools: List[str] = field(default_factory=list)
     status: str = "idle"  # idle/working/review/done
     current_task: str = ""
-    
+
     def assign_task(self, task: str, tools: List[str] = None):
         """分配任务"""
         self.current_task = task
@@ -27,12 +28,12 @@ class ProjectAgent:
         if tools:
             self.tools = tools
         return f"✅ {self.name} 已接受任务: {task}"
-    
+
     def complete_task(self, result: str):
         """完成任务"""
         self.status = "done"
         return f"✅ {self.name} 完成任务: {self.current_task}"
-    
+
     def to_dict(self) -> Dict:
         return {
             "id": self.id,
@@ -52,7 +53,7 @@ AGENT_TEAM = {
         role="系统架构",
         responsibilities=[
             "设计系统架构",
-            "定义接口规范", 
+            "定义接口规范",
             "技术选型",
             "代码审查",
         ],
@@ -63,7 +64,6 @@ AGENT_TEAM = {
             "架构文档",
         ],
     ),
-    
     "frontend": ProjectAgent(
         id="fe-001",
         name="前端Agent",
@@ -81,7 +81,6 @@ AGENT_TEAM = {
             "前端工程化",
         ],
     ),
-    
     "backend": ProjectAgent(
         id="be-001",
         name="后端Agent",
@@ -99,7 +98,6 @@ AGENT_TEAM = {
             "微服务",
         ],
     ),
-    
     "router": ProjectAgent(
         id="rt-001",
         name="路由Agent",
@@ -117,7 +115,6 @@ AGENT_TEAM = {
             "流量控制",
         ],
     ),
-    
     "devops": ProjectAgent(
         id="ops-001",
         name="部署Agent",
@@ -135,7 +132,6 @@ AGENT_TEAM = {
             "Terraform",
         ],
     ),
-    
     "qa": ProjectAgent(
         id="qa-001",
         name="测试Agent",
@@ -153,7 +149,6 @@ AGENT_TEAM = {
             "测试框架",
         ],
     ),
-    
     "docs": ProjectAgent(
         id="doc-001",
         name="文档Agent",
@@ -176,26 +171,26 @@ AGENT_TEAM = {
 
 class AgentManager:
     """Agent管理者 - 蟹爪主意识"""
-    
+
     def __init__(self):
         self.agents = AGENT_TEAM
         self.projects = {}
-    
+
     def list_agents(self) -> List[Dict]:
         """列出所有Agent"""
         return [agent.to_dict() for agent in self.agents.values()]
-    
+
     def get_agent(self, agent_id: str) -> ProjectAgent:
         """获取Agent"""
         return self.agents.get(agent_id)
-    
+
     def assign_task(self, agent_id: str, task: str, tools: List[str] = None) -> str:
         """分配任务给Agent"""
         agent = self.get_agent(agent_id)
         if agent:
             return agent.assign_task(task, tools)
         return f"❌ Agent {agent_id} 不存在"
-    
+
     def check_status(self) -> List[Dict]:
         """检查所有Agent状态"""
         return [
@@ -206,7 +201,7 @@ class AgentManager:
             }
             for agent in self.agents.values()
         ]
-    
+
     def create_project_plan(self, project_name: str, tasks: List[Dict]) -> Dict:
         """创建项目计划"""
         plan = {
@@ -223,17 +218,17 @@ class AgentManager:
 manager = AgentManager()
 
 if __name__ == "__main__":
-    print("="*70)
+    print("=" * 70)
     print("🦀 CrabSwarm Agent团队")
-    print("="*70)
-    
+    print("=" * 70)
+
     print("\n📋 Agent列表:")
     for agent_info in manager.list_agents():
         print(f"\n  🎭 {agent_info['name']}")
         print(f"     角色: {agent_info['role']}")
         print(f"     技能: {', '.join(agent_info['skills'][:3])}...")
         print(f"     状态: {agent_info['status']}")
-    
-    print("\n" + "="*70)
+
+    print("\n" + "=" * 70)
     print(f"总计: {len(manager.agents)} 个Agent")
-    print("="*70)
+    print("=" * 70)
