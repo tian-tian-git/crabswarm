@@ -6,7 +6,7 @@ CrabSwarm CLI
 import argparse
 import json
 from .core.swarm import Swarm
-from .core.agent import Agent
+from .core.swarm import Agent
 from .core.consciousness import MainConsciousness
 
 
