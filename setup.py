@@ -34,8 +34,12 @@ setup(
         "dev": [
             "pytest>=7.0.0",
             "pytest-cov>=4.0.0",
+            "pytest-html>=3.2.0",
+            "pytest-json-report>=1.5.0",
             "black>=23.0.0",
             "flake8>=6.0.0",
+            "safety>=2.3.0",
+            "bandit>=1.7.0",
         ],
         "llm": [
             "openai>=1.0.0",

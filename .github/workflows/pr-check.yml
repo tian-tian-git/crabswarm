@@ -1,0 +1,64 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pr-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+    
+    - name: Check code formatting
+      run: |
+        black --check crabswarm/ tests/ || (echo "::warning::Code formatting issues found. Run 'black crabswarm/ tests/' to fix." && exit 1)
+      continue-on-error: true
+    
+    - name: Lint with flake8
+      run: |
+        flake8 crabswarm/ --count --select=E9,F63,F7,F82 --show-source --statistics --extend-ignore=F821
+    
+    - name: Run quick tests
+      run: |
+        pytest tests/test_core.py -v -x --tb=short
+    
+    - name: Check PR size
+      run: |
+        CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | wc -l)
+        if [ $CHANGED_FILES -gt 20 ]; then
+          echo "::warning::PR contains $CHANGED_FILES changed files. Consider breaking it into smaller PRs."
+        fi
+        echo "Changed files: $CHANGED_FILES"
+    
+    - name: Check for tests
+      run: |
+        CHANGED_PY=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep '\.py$' | grep -v test | grep -v __pycache__ || true)
+        if [ -n "$CHANGED_PY" ]; then
+          echo "Changed Python files:"
+          echo "$CHANGED_PY"
+          echo ""
+          echo "::notice::Please ensure tests are included for new functionality."
+        fi
