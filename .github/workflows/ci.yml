@@ -1,0 +1,251 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+jobs:
+  # ==========================================
+  # 1. 代码质量检查
+  # ==========================================
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install linting tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 black isort
+
+      - name: Lint with flake8
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=.git,__pycache__,venv,node_modules
+          flake8 . --count --exit-zero --max-complexity=15 --max-line-length=100 --statistics --exclude=.git,__pycache__,venv,node_modules
+
+      - name: Check code formatting with black
+        run: |
+          black --check --diff . --exclude='/(\.git|\.venv|venv|__pycache__|node_modules)/' || true
+
+      - name: Check import sorting with isort
+        run: |
+          isort --check-only --diff . --skip .git --skip venv --skip __pycache__ || true
+
+  # ==========================================
+  # 2. 测试阶段
+  # ==========================================
+  test:
+    needs: lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/setup.py', '**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+
+      - name: Run tests
+        run: |
+          if [ -d "tests" ]; then
+            pytest tests/ -v --cov=. --cov-report=xml --cov-report=html --ignore=venv --ignore=node_modules
+          else
+            echo "No tests directory found"
+            exit 0
+          fi
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.python-version }}
+          path: |
+            htmlcov/
+            coverage.xml
+
+  # ==========================================
+  # 3. CrabSwarm 专项测试
+  # ==========================================
+  test-crabswarm:
+    needs: lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./crabswarm
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-crabswarm-${{ hashFiles('crabswarm/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-crabswarm-
+
+      - name: Install CrabSwarm
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Run CrabSwarm tests
+        run: |
+          pytest tests/ -v --cov=crabswarm --cov-report=xml --cov-report=html
+
+      - name: Run examples
+        run: |
+          if [ -d "examples" ]; then
+            for f in examples/*.py; do
+              if [ -f "$f" ]; then
+                echo "Running $f"
+                python "$f" || true
+              fi
+            done
+          fi
+
+      - name: Upload CrabSwarm coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: crabswarm-coverage
+          path: |
+            crabswarm/htmlcov/
+            crabswarm/coverage.xml
+
+  # ==========================================
+  # 4. 构建阶段
+  # ==========================================
+  build:
+    needs: [test, test-crabswarm]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install build tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Build CrabSwarm package
+        working-directory: ./crabswarm
+        run: |
+          python -m build
+
+      - name: Check package
+        working-directory: ./crabswarm
+        run: |
+          twine check dist/*
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: crabswarm-dist
+          path: crabswarm/dist/
+
+  # ==========================================
+  # 5. 安全扫描
+  # ==========================================
+  security:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install security tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit safety
+
+      - name: Run Bandit security scan
+        run: |
+          bandit -r . -f json -o bandit-report.json --exclude ./venv,./node_modules,./__pycache__ || true
+          bandit -r . --exclude ./venv,./node_modules,./__pycache__ || true
+
+      - name: Upload security report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: bandit-report.json
+
+  # ==========================================
+  # 6. 部署阶段 (仅 main/master 分支)
+  # ==========================================
+  deploy:
+    needs: [build, security]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: crabswarm-dist
+          path: dist/
+
+      - name: Display artifacts
+        run: |
+          echo "🚀 Deployment artifacts ready:"
+          ls -la dist/
+
+      - name: Deploy notification
+        run: |
+          echo "✅ CI/CD Pipeline completed successfully!"
+          echo "📦 CrabSwarm package ready for deployment"
+          echo "📝 Commit: ${{ github.sha }}"
+          echo "👤 Author: ${{ github.actor }}"
