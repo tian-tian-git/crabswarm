@@ -20,7 +20,8 @@ def adapter_config():
         "server_url": "ws://localhost:8080/mcp",
         "timeout": 30,
         "max_retries": 3,
-        "headers": {"Authorization": "Bearer test-token"}
+        "headers": {"Authorization": "Bearer test-token"},
+        "_test_mode": True  # 启用测试模式，跳过后台消息循环
     }
 
 
