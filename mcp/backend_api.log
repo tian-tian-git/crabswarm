@@ -1,0 +1,9 @@
+INFO:__main__:✅ MCP Backend API started on http://0.0.0.0:8080
+INFO:__main__:   API documentation: http://0.0.0.0:8080/
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:17:59 +0800] "GET /api/health HTTP/1.1" 200 360 "-" "curl/8.5.0"
+INFO:crabswarm.mcp.adapter_sse:✅ MCPAdapter initialized with server: http://localhost:3000
+INFO:crabswarm.mcp.adapter_sse:✅ Connected to MCP server: {'name': 'CrabSwarm MCP Server', 'version': '1.0.0'}
+INFO:crabswarm.mcp.adapter_sse:Loaded 5 tools from MCP server
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:18:01 +0800] "GET /api/tools HTTP/1.1" 200 1407 "-" "curl/8.5.0"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:18:58 +0800] "POST /api/tools/call HTTP/1.1" 200 697 "-" "curl/8.5.0"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:00 +0800] "POST /api/tools/call HTTP/1.1" 200 399 "-" "curl/8.5.0"

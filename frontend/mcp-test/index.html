@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Client 测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .status-bar {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+        
+        .status-dot.connected {
+            background: #4caf50;
+            box-shadow: 0 0 8px #4caf50;
+        }
+        
+        .status-dot.disconnected {
+            background: #f44336;
+        }
+        
+        .panel {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .panel h2 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        input[type="text"],
+        input[type="url"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #1976d2;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .btn-danger {
+            background: #f44336;
+        }
+        
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+        
+        .btn-success {
+            background: #4caf50;
+        }
+        
+        .btn-success:hover {
+            background: #388e3c;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .tool-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tool-card:hover {
+            border-color: #2196f3;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
+        }
+        
+        .tool-card h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .tool-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .tool-card .tag {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        
+        .log-container {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+        
+        .log-time {
+            color: #90a4ae;
+        }
+        
+        .log-error {
+            color: #ef5350;
+        }
+        
+        .log-success {
+            color: #66bb6a;
+        }
+        
+        .log-info {
+            color: #64b5f6;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h3 {
+            color: #333;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+        
+        .close-btn:hover {
+            color: #333;
+        }
+        
+        .result-panel {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .result-panel.active {
+            display: block;
+        }
+        
+        .result-panel pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #2196f3;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦞 MCP Client 测试控制台</h1>
+        
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot disconnected" id="statusDot"></div>
+                <span id="statusText">未连接</span>
+            </div>
+            <div>
+                <span id="serverUrl">未配置服务器</span>
+            </div>
+        </div>
+        
+        <!-- 连接配置 -->
+        <div class="panel">
+            <h2>🔌 服务器连接</h2>
+            <div class="form-group">
+                <label>Backend API URL</label>
+                <input type="url" id="serverUrlInput" placeholder="http://localhost:8080" value="http://localhost:8080">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="connect()" class="btn-success">连接</button>
+                <button onclick="disconnect()" class="btn-danger">断开</button>
+                <button onclick="checkStatus()">检查状态</button>
+            </div>
+        </div>
+        
+        <!-- 工具列表 -->
+        <div class="panel">
+            <h2>🛠️ 可用工具</h2>
+            <div style="margin-bottom: 15px;">
+                <button onclick="listTools()">刷新工具列表</button>
+                <span id="toolsLoading"></span>
+            </div>
+            <div class="tools-grid" id="toolsGrid">
+                <div style="color: #999; text-align: center; padding: 40px;">
+                    点击"刷新工具列表"加载可用工具
+                </div>
+            </div>
+        </div>
+        
+        <!-- 工具调用 -->
+        <div class="modal" id="toolModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">调用工具</h3>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="form-group">
+                    <label>工具名称</label>
+                    <input type="text" id="toolName" readonly>
+                </div>
+                <div class="form-group">
+                    <label>参数 (JSON格式)</label>
+                    <textarea id="toolParams" placeholder='{"key": "value"}'>{}</textarea>
+                </div>
+                <button onclick="callTool()">执行调用</button>
+                <span id="callLoading"></span>
+                <div class="result-panel" id="resultPanel">
+                    <label>执行结果:</label>
+                    <pre id="resultContent"></pre>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 实时日志 -->
+        <div class="panel">
+            <h2>📋 实时日志</h2>
+            <div class="log-container" id="logContainer">
+                <div class="log-entry">
+                    <span class="log-time">[--:--:--]</span> 系统初始化完成，等待连接...
+                </div>
+            </div>
+            <div style="margin-top: 10px;">
+                <button onclick="clearLogs()">清空日志</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // API基础URL
+        let apiBaseUrl = 'http://localhost:8080';
+        let isConnected = false;
+        let currentTool = null;
+        
+        function log(message, type = 'info') {
+            const container = document.getElementById('logContainer');
+            const time = new Date().toLocaleTimeString('zh-CN');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            if (type === 'error') entry.classList.add('log-error');
+            if (type === 'success') entry.classList.add('log-success');
+            if (type === 'info') entry.classList.add('log-info');
+            entry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+            container.appendChild(entry);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function updateStatus(connected, url = '') {
+            isConnected = connected;
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+            const urlDisplay = document.getElementById('serverUrl');
+            
+            if (connected) {
+                dot.classList.remove('disconnected');
+                dot.classList.add('connected');
+                text.textContent = '已连接';
+                urlDisplay.textContent = url || apiBaseUrl;
+            } else {
+                dot.classList.remove('connected');
+                dot.classList.add('disconnected');
+                text.textContent = '未连接';
+                urlDisplay.textContent = '未配置服务器';
+            }
+        }
+        
+        async function apiRequest(endpoint, options = {}) {
+            const url = `${apiBaseUrl}${endpoint}`;
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            
+            try {
+                const response = await fetch(url, { ...defaultOptions, ...options });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return await response.json();
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        async function connect() {
+            const url = document.getElementById('serverUrlInput').value;
+            if (!url) {
+                log('请输入服务器URL', 'error');
+                return;
+            }
+            
+            apiBaseUrl = url.replace(/\/$/, '');
+            log(`正在连接: ${apiBaseUrl}`);
+            
+            try {
+                const data = await apiRequest('/api/connect', {
+                    method: 'POST',
+                    body: JSON.stringify({ server_url: 'http://localhost:3000' })
+                });
+                
+                if (data.success) {
+                    updateStatus(true, apiBaseUrl);
+                    log('连接成功: ' + data.message, 'success');
+                    if (data.server_info) {
+                        log(`服务器: ${data.server_info.name} v${data.server_info.version}`);
+                    }
+                } else {
+                    log('连接失败: ' + data.message, 'error');
+                    updateStatus(false);
+                }
+            } catch (error) {
+                log('连接错误: ' + error.message, 'error');
+                updateStatus(false);
+            }
+        }
+        
+        async function disconnect() {
+            if (!isConnected) {
+                log('当前未连接', 'error');
+                return;
+            }
+            
+            try {
+                const data = await apiRequest('/api/disconnect', { method: 'POST' });
+                if (data.success) {
+                    updateStatus(false);
+                    log('已断开连接');
+                } else {
+                    log('断开连接失败: ' + data.message, 'error');
+                }
+            } catch (error) {
+                log('断开连接错误: ' + error.message, 'error');
+            }
+        }
+        
+        async function checkStatus() {
+            try {
+                const data = await apiRequest('/api/status');
+                log(`连接状态: ${data.connected ? '已连接' : '未连接'}`);
+                if (data.server_info) {
+                    log(`服务器: ${data.server_info.name}`);
+                }
+                updateStatus(data.connected, apiBaseUrl);
+            } catch (error) {
+                log('检查状态失败: ' + error.message, 'error');
+            }
+        }
+        
+        async function listTools() {
+            const loadingEl = document.getElementById('toolsLoading');
+            loadingEl.innerHTML = '<span class="loading"></span>';
+            
+            try {
+                log('获取工具列表...');
+                const data = await apiRequest('/api/tools');
+                
+                if (data.success) {
+                    const tools = data.tools;
+                    const grid = document.getElementById('toolsGrid');
+                    
+                    if (tools.length === 0) {
+                        grid.innerHTML = '<div style="color: #999; text-align: center; padding: 40px;">暂无可用工具</div>';
+                    } else {
+                        grid.innerHTML = tools.map(tool => `
+                            <div class="tool-card" onclick="openToolModal('${tool.name}', '${tool.description}')">
+                                <h3>${tool.name}</h3>
+                                <p>${tool.description}</p>
+                                <span class="tag">MCP Tool</span>
+                            </div>
+                        `).join('');
+                    }
+                    
+                    log(`加载了 ${tools.length} 个工具`, 'success');
+                    updateStatus(true, apiBaseUrl);
+                } else {
+                    log('获取工具列表失败: ' + data.message, 'error');
+                }
+            } catch (error) {
+                log('获取工具列表错误: ' + error.message, 'error');
+            } finally {
+                loadingEl.innerHTML = '';
+            }
+        }
+        
+        function openToolModal(toolName, description) {
+            currentTool = toolName;
+            document.getElementById('modalTitle').textContent = `调用: ${toolName}`;
+            document.getElementById('toolName').value = toolName;
+            document.getElementById('toolParams').value = '{}';
+            document.getElementById('resultPanel').classList.remove('active');
+            document.getElementById('toolModal').classList.add('active');
+            log(`准备调用工具: ${toolName}`);
+        }
+        
+        function closeModal() {
+            document.getElementById('toolModal').classList.remove('active');
+        }
+        
+        async function callTool() {
+            const paramsStr = document.getElementById('toolParams').value;
+            const loadingEl = document.getElementById('callLoading');
+            
+            let params;
+            try {
+                params = JSON.parse(paramsStr);
+            } catch (e) {
+                log('参数JSON格式错误: ' + e.message, 'error');
+                return;
+            }
+            
+            loadingEl.innerHTML = '<span class="loading"></span>';
+            log(`调用工具: ${currentTool}`);
+            log(`参数: ${JSON.stringify(params)}`);
+            
+            try {
+                const data = await apiRequest('/api/tools/call', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        tool_name: currentTool,
+                        params: params
+                    })
+                });
+                
+                if (data.success) {
+                    document.getElementById('resultContent').textContent = JSON.stringify(data.result, null, 2);
+                    document.getElementById('resultPanel').classList.add('active');
+                    log('工具调用成功', 'success');
+                } else {
+                    log('工具调用失败: ' + data.message, 'error');
+                }
+            } catch (error) {
+                log('工具调用错误: ' + error.message, 'error');
+            } finally {
+                loadingEl.innerHTML = '';
+            }
+        }
+        
+        function clearLogs() {
+            document.getElementById('logContainer').innerHTML = `
+                <div class="log-entry">
+                    <span class="log-time">[${new Date().toLocaleTimeString('zh-CN')}]</span> 日志已清空
+                </div>
+            `;
+        }
+        
+        // 点击模态框外部关闭
+        document.getElementById('toolModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+        
+        // 页面加载时自动检查状态
+        window.addEventListener('load', function() {
+            log('页面加载完成');
+            checkStatus();
+        });
+    </script>
+</body>
+</html>

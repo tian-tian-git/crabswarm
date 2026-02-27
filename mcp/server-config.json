@@ -1,0 +1,199 @@
+{
+  "name": "CrabSwarm MCP Server",
+  "version": "1.0.0",
+  "port": 3000,
+  "host": "localhost",
+  "tools": [
+    {
+      "name": "file_system",
+      "description": "文件系统操作",
+      "parameters": {
+        "action": {
+          "type": "string",
+          "enum": ["read", "write", "list", "delete"]
+        },
+        "path": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string",
+          "optional": true
+        }
+      }
+    },
+    {
+      "name": "web_search",
+      "description": "网络搜索",
+      "parameters": {
+        "query": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "number",
+          "default": 10
+        }
+      }
+    },
+    {
+      "name": "agent_communication",
+      "description": "智能体间通信",
+      "parameters": {
+        "target_agent": {
+          "type": "string"
+        },
+        "message": {
+          "type": "object"
+        },
+        "message_type": {
+          "type": "string",
+          "enum": ["request", "response", "broadcast"]
+        }
+      }
+    },
+    {
+      "name": "context_share",
+      "description": "共享上下文",
+      "parameters": {
+        "context_id": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
+        },
+        "accessible_by": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "task_collaboration",
+      "description": "协作任务",
+      "parameters": {
+        "task_name": {
+          "type": "string"
+        },
+        "participants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "steps": {
+          "type": "array"
+        }
+      }
+    }
+  ],
+  "agents": [
+    {
+      "id": "github-learner",
+      "name": "GitHub Learner",
+      "department": "learning",
+      "permissions": ["read", "write", "search", "communicate"]
+    },
+    {
+      "id": "hf-learner",
+      "name": "HuggingFace Learner",
+      "department": "learning",
+      "permissions": ["read", "write", "search", "communicate"]
+    },
+    {
+      "id": "news-collector",
+      "name": "News Collector",
+      "department": "news",
+      "permissions": ["read", "write", "search", "communicate"]
+    },
+    {
+      "id": "news-analyst",
+      "name": "News Analyst",
+      "department": "news",
+      "permissions": ["read", "write", "communicate"]
+    },
+    {
+      "id": "news-reporter",
+      "name": "News Reporter",
+      "department": "news",
+      "permissions": ["read", "write", "communicate"]
+    },
+    {
+      "id": "report-master",
+      "name": "Report Master",
+      "department": "report",
+      "permissions": ["read", "write", "communicate", "coordinate"]
+    },
+    {
+      "id": "architect-agent",
+      "name": "Architect Agent",
+      "department": "engineering",
+      "permissions": ["read", "write", "execute", "communicate"]
+    },
+    {
+      "id": "backend-agent",
+      "name": "Backend Agent",
+      "department": "engineering",
+      "permissions": ["read", "write", "execute", "communicate"]
+    },
+    {
+      "id": "frontend-agent",
+      "name": "Frontend Agent",
+      "department": "engineering",
+      "permissions": ["read", "write", "execute", "communicate"]
+    },
+    {
+      "id": "devops-agent",
+      "name": "DevOps Agent",
+      "department": "engineering",
+      "permissions": ["read", "write", "execute", "communicate"]
+    },
+    {
+      "id": "qa-agent",
+      "name": "QA Agent",
+      "department": "engineering",
+      "permissions": ["read", "write", "execute", "communicate"]
+    },
+    {
+      "id": "docs-agent",
+      "name": "Docs Agent",
+      "department": "engineering",
+      "permissions": ["read", "write", "communicate"]
+    },
+    {
+      "id": "strategy-lead",
+      "name": "Strategy Lead",
+      "department": "strategy",
+      "permissions": ["read", "write", "search", "communicate"]
+    },
+    {
+      "id": "community-manager",
+      "name": "Community Manager",
+      "department": "partnership",
+      "permissions": ["read", "write", "communicate"]
+    },
+    {
+      "id": "workflow-architect",
+      "name": "Workflow Architect",
+      "department": "workflow",
+      "permissions": ["read", "write", "monitor", "communicate"]
+    },
+    {
+      "id": "sysops-agent",
+      "name": "SysOps Agent",
+      "department": "system",
+      "permissions": ["read", "write", "execute", "monitor"]
+    },
+    {
+      "id": "mail-sender",
+      "name": "Mail Sender",
+      "department": "execution",
+      "permissions": ["read", "send"]
+    }
+  ],
+  "security": {
+    "auth_enabled": true,
+    "token_based": true,
+    "audit_log": true
+  }
+}

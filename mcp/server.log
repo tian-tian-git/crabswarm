@@ -1,0 +1,41 @@
+INFO:__main__:✅ Loaded config from /root/.openclaw/workspace/mcp/server-config.json
+INFO:__main__:   Tools: 5
+INFO:__main__:   Agents: 17
+INFO:__main__:✅ MCP Server started on http://localhost:3000
+INFO:__main__:   SSE endpoint: http://localhost:3000/sse
+INFO:__main__:   Message endpoint: http://localhost:3000/message
+INFO:__main__:   Health check: http://localhost:3000/health
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:15:23 +0800] "GET /health HTTP/1.1" 200 268 "-" "curl/8.5.0"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:15:23 +0800] "GET / HTTP/1.1" 200 330 "-" "curl/8.5.0"
+INFO:__main__:SSE client connected: 127.0.0.1
+INFO:__main__:SSE client connected: 127.0.0.1
+INFO:__main__:SSE client connected: 127.0.0.1
+INFO:__main__:SSE client disconnected: Cannot write to closing transport
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:15:35 +0800] "GET /sse HTTP/1.1" 200 0 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:__main__:SSE client disconnected: Cannot write to closing transport
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:15:37 +0800] "GET /sse HTTP/1.1" 200 0 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:__main__:SSE client disconnected: Cannot write to closing transport
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:15:41 +0800] "GET /sse HTTP/1.1" 200 0 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:16:46 +0800] "POST /message HTTP/1.1" 200 363 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:16:46 +0800] "POST /message HTTP/1.1" 200 1308 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:16:46 +0800] "POST /message HTTP/1.1" 200 545 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:16:46 +0800] "POST /message HTTP/1.1" 200 336 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:18:01 +0800] "POST /message HTTP/1.1" 200 363 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:18:01 +0800] "POST /message HTTP/1.1" 200 1308 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:18:58 +0800] "POST /message HTTP/1.1" 200 581 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:00 +0800] "POST /message HTTP/1.1" 200 283 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 363 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 1308 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 355 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 363 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 1308 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 355 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 363 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 1308 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 355 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 363 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 1308 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 355 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 363 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 1308 "-" "Python/3.12 aiohttp/3.13.3"
+INFO:aiohttp.access:127.0.0.1 [27/Feb/2026:12:19:36 +0800] "POST /message HTTP/1.1" 200 355 "-" "Python/3.12 aiohttp/3.13.3"
