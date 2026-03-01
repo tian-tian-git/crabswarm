@@ -1,0 +1,43 @@
+# Healing Monitor 配置文件
+
+# 扫描间隔（秒）
+scan_interval: 300
+
+# 健康检查项目
+checks:
+  disk_usage:
+    enabled: true
+    threshold: 80  # 磁盘使用率超过80%告警
+  
+  git_status:
+    enabled: true
+    max_untracked_files: 500  # 未跟踪文件超过500个告警
+  
+  agent_health:
+    enabled: true
+    check_interval: 300
+  
+  draft_backlog:
+    enabled: true
+    max_files: 50  # draft目录超过50个文件触发清理
+  
+  approved_backlog:
+    enabled: true
+    max_files: 30
+
+# 自动修复选项
+auto_fix:
+  enabled: true
+  max_fix_attempts: 3
+  
+# 报告输出
+reports:
+  output_dir: "./reports"
+  format: ["json", "txt"]
+  
+# 日志配置
+logging:
+  level: INFO
+  file: "./logs/healing-monitor.log"
+  max_size: 10485760  # 10MB
+  backup_count: 5
