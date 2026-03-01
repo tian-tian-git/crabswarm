@@ -79,6 +79,6 @@ twine check dist/*
 ## 状态徽章
 
 ```markdown
-[![CI/CD](https://github.com/yourusername/crabswarm/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/crabswarm/actions/workflows/ci.yml)
-[![Release](https://github.com/yourusername/crabswarm/actions/workflows/release.yml/badge.svg)](https://github.com/yourusername/crabswarm/actions/workflows/release.yml)
+[![CI/CD](https://github.com/tian-tian-git/crabswarm/actions/workflows/ci.yml/badge.svg)](https://github.com/tian-tian-git/crabswarm/actions/workflows/ci.yml)
+[![Release](https://github.com/tian-tian-git/crabswarm/actions/workflows/release.yml/badge.svg)](https://github.com/tian-tian-git/crabswarm/actions/workflows/release.yml)
 ```
