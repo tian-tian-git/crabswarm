@@ -11,7 +11,7 @@ setup(
     description="A 'soulful' multi-agent collaboration framework",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/crabswarm",
+    url="https://github.com/tian-tian-git/crabswarm",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
